@@ -1,2 +1,4 @@
 # LivreGo-source
-Learning GO
+
+Suite d'éxercice pour apprendre golang
+
