@@ -46,7 +46,7 @@ var allPoliticians Politicians
 
 // AllPoliticians fetches all politicians from JSON file if cache is empty, returns the cache otherwise
 func (m *FromFiles) AllPoliticians() (Politicians, error) {
-	if allPoliticians != nil {
+	if allPoliticians == nil {
 		file, err := os.ReadFile(path.Join(m.DirPath, m.PoliticiansFileName))
 		if err != nil {
 			return nil, err
