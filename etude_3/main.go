@@ -21,7 +21,7 @@ func main() {
 		return
 	}
 
-	m := model.FromFiles{DirPath: usr.HomeDir + "/Documents/GitHub/LivreGo-source/LivreGo-data", PoliticiansFileName: "politicians.json", VotesFileName: votesFilesNames}
+	m := model.FromFiles{DirPath: usr.HomeDir + "/LivreGo-data", PoliticiansFileName: "politicians.json", VotesFileName: votesFilesNames}
 
 	allVotes, err := m.AllVotes()
 	if err != nil {
