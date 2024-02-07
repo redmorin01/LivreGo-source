@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"sync"
 )
 
 // FromFiles holds the information and instruments the liaison of the model with flat JSON files
@@ -81,17 +82,39 @@ var allVotes Votes
 // AllVotes fetches all votes from JSON file if cache is empty, returns the cache otherwise
 func (m *FromFiles) AllVotes() (Votes, error) {
 	if allVotes == nil {
+		wg := &sync.WaitGroup{}
+		mutex := &sync.Mutex{}
 		allVotes = Votes{}
+
+		errs := make(chan error, len(m.VotesFileName))
+		wg.Add(len(m.VotesFileName))
 		for _, filename := range m.VotesFileName {
-			var votesInFile Votes
-			file, err := os.ReadFile(path.Join(m.DirPath, filename))
+			fileNameRef := &filename
+
+			go func() {
+				defer wg.Done()
+				var votesInFile Votes
+				file, err := os.ReadFile(path.Join(m.DirPath, *fileNameRef))
+				if err != nil {
+					errs <- err
+					return
+				}
+				if err = json.Unmarshal(file, &votesInFile); err != nil {
+					errs <- err
+					return
+				}
+				mutex.Lock()
+				defer mutex.Unlock()
+				allVotes = append(allVotes, votesInFile...)
+				errs <- nil
+			}()
+		}
+		wg.Wait()
+		close(errs)
+		for err := range errs {
 			if err != nil {
 				return nil, err
 			}
-			if err = json.Unmarshal(file, &votesInFile); err != nil {
-				return nil, err
-			}
-			allVotes = append(allVotes, votesInFile...)
 		}
 	}
 	return allVotes, nil
