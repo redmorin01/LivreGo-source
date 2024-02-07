@@ -38,5 +38,6 @@ func main() {
 		return
 	}
 
+	log.Println(len(allVotes))
 	log.Printf("Le gagnant est %s \n", w.String())
 }

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/redmorin01/LivreGo-source/etude_2/elections/model"
+	"github.com/redmorin01/LivreGo-source/etude_3/elections/model"
 )
 
 // Round is a count, for each politician, of the number of votes they got
